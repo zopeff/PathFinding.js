@@ -39,8 +39,9 @@
   },
   "scripts": {
     "test": "gulp test",
-    "build": "gulp default && npm run build_module",
-    "build_module": "esbuild index.js --minify --bundle --outfile=lib/module/pathfinding.js --format=esm"
+    "build": "gulp default && npm run build_module_dev && npm run build_module_prod",
+    "build_module_dev": "esbuild index.js --bundle --outfile=lib/module/pathfinding.js --format=esm",
+    "build_module_prod": "esbuild index.js --minify --bundle --outfile=lib/module/pathfinding-min.js --format=esm"
   },
   "repository": {
     "type": "git",
