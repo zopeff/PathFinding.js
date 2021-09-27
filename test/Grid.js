@@ -21,14 +21,77 @@ describe('Grid', function() {
                 grid.nodes[i].length.should.equal(width); 
             }
         });
-
+        
         it('should set all nodes\' walkable attribute', function() {
             for (var i = 0; i < height; ++i) {
                 for (var j = 0; j < width; ++j) {
                     grid.isWalkableAt(j, i).should.be.true;
                 }
             }
+        });          
+
+        it('should call walkable when function', function() {
+            grid.setWalkableAt(1, 1, function(x1,y1,x2,y2){
+                return false;
+            }); 
+            for (var i = 0; i < height; ++i) {
+                for (var j = 0; j < width; ++j) {
+                    if(j==1 && i==1){
+                        grid.isWalkableAt(j, i, j-1, i-1).should.be.false;    
+                    }
+                    else{
+                        grid.isWalkableAt(j, i).should.be.true;
+                    }
+                }
+            }
         });
+    });
+    
+    describe('generate with walkable function', function() {
+        var matrix, grid, width, height;
+        var enumPos = function(f, o) {
+            for (var y = 0; y < height; ++y) {
+                for (var x = 0; x < width; ++x) {
+                    if (o) {
+                        f.call(o, x, y, grid);
+                    } else {
+                        f(x, y, grid);
+                    }
+                }
+            }
+        };
+        beforeEach(function() {
+            walkableFn = function(x1,y1,x2,y2){
+                if(x1==1 && y1 == 0){
+                    return false;
+                }
+                return true;
+            };
+            height = 10;
+            width = 10;
+            grid = new Grid(width, height, walkableFn);
+        });
+
+        it('should have correct size', function() {
+            grid.width.should.equal(width);
+            grid.height.should.equal(height);
+
+            grid.nodes.length.should.equal(height);
+            for (var i = 0; i < height; ++i) {
+                grid.nodes[i].length.should.equal(width); 
+            }
+        });
+
+        it('should initiate all nodes\' walkable attribute', function() {
+            enumPos(function(x, y, g) {
+                if (x==1 && y==0) {
+                    g.isWalkableAt(x, y).should.be.false;
+                } else {
+                    g.isWalkableAt(x, y).should.be.true;
+                }
+            });
+        });
+
     });
 
     describe('generate with matrix', function() {
